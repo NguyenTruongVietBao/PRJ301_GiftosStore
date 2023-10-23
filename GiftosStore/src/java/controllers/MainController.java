@@ -36,19 +36,26 @@ public class MainController extends HttpServlet {
 //      Shopping Cart
     private static final String DISPLAY = "Display";
     private static final String DISPLAY_CONTROLLER = "DisplayController";
-    private static final String VIEWCART = "Cart";
-    private static final String VIEWCART_CONTROLLER = "cart.jsp";
+    private static final String VIEWCART = "ViewCart";
+    private static final String VIEWCART_CONTROLLER = "ViewCartController";
     private static final String ADDCART = "AddCart";
     private static final String ADDCART_CONTROLLER = "AddCartController";
+    private static final String UPDATECART = "UpdateCart";
+    private static final String UPDATECART_CONTROLLER = "UpdateCartController";
+    private static final String DELETECART = "DeleteCart";
+    private static final String DELETECART_CONTROLLER = "DeleteCartController";
     private static final String SEARCHCART = "SearchCart";
     private static final String SEARCHCART_CONTROLLER = "SearchCartController";
+    private static final String PAYMENT = "Payment";
+    private static final String PAYMENT_CONTROLLER = "PaymentController";
+    private static final String CHECKOUT = "CheckOut";
+    private static final String CHECKOUT_CONTROLLER = "CheckOutController";
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         String url = WELCOME;
         try {
-            String action = request.getParameter("action");
-            
+            String action = request.getParameter("action");            
             if (action == null) {
                 url = WELCOME;
             } 
@@ -62,10 +69,14 @@ public class MainController extends HttpServlet {
             else if (DELETE.equals(action))     { url = DELETE_CONTROLLER; }
                        
 //Shopping            
-            else if (DISPLAY.equals(action))    { url = DISPLAY_CONTROLLER; }           
+            else if (DISPLAY.equals(action))    { url = DISPLAY_CONTROLLER; } 
+            else if (SEARCHCART.equals(action)) { url = SEARCHCART_CONTROLLER; }
             else if (VIEWCART.equals(action))   { url = VIEWCART_CONTROLLER; }   
             else if (ADDCART.equals(action))    { url = ADDCART_CONTROLLER; }
-            else if (SEARCHCART.equals(action)) { url = SEARCHCART_CONTROLLER; }
+            else if (UPDATECART.equals(action)) { url = UPDATECART_CONTROLLER; }
+            else if (DELETECART.equals(action)) { url = DELETECART_CONTROLLER; }
+            else if (CHECKOUT.equals(action))   { url = CHECKOUT_CONTROLLER; }
+            else if (PAYMENT.equals(action))    { url = PAYMENT_CONTROLLER; }
         } catch (Exception e) {
             log("Error at MainController" + e.toString());
         } finally {

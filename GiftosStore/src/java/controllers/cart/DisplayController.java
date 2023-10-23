@@ -19,6 +19,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import model.Category;
 import DAO.DAO;
+import javax.servlet.http.Cookie;
+import model.Cart;
+import model.Item;
+import model.Product;
 
 /**
  *
@@ -38,13 +42,34 @@ public class DisplayController extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException, SQLException, ClassNotFoundException {
-        
-//        HIỂN THỊ MỤC LỤC 
-        response.setContentType("text/html;charset=UTF-8");
+            response.setContentType("text/html;charset=UTF-8");
         DAO dao = new DAO();
-        List<Category> list = dao.getAll();
-        request.setAttribute("LIST_CATEGORY", list);
-        request.getRequestDispatcher("shop.jsp").forward(request, response);
+//        HIỂN THỊ Category
+        List<Category> listCategory = dao.getAllCategory();
+        request.setAttribute("LIST_CATEGORY", listCategory);
+        
+//        HIỂN THỊ PRODUCT          
+        List<Product> listProduct = dao.getAllProduct();
+        Cookie arr[] = request.getCookies();
+        String txt="";
+        if(arr!= null){
+            for (Cookie cookie : arr) {
+                if(cookie.getName().equals("Cart")){
+                    txt+=cookie.getValue();
+                }
+            }
+        }
+        Cart cart = new Cart(txt, listProduct);
+        List<Item> listItem = cart.getItems();
+        int n;
+        if(listItem != null){
+            n = listItem.size();
+        }else
+            n = 0;
+            request.setAttribute("sizeCart", n);
+            request.setAttribute("LIST_PRODUCT", listProduct);
+            request.getRequestDispatcher("shop.jsp").forward(request, response);
+        
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

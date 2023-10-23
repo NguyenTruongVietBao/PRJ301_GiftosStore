@@ -35,18 +35,14 @@ public class ProductController extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        try (PrintWriter out = response.getWriter()) {
-            /* TODO output your page here. You may use following sample code. */
-            out.println("<!DOCTYPE html>");
-            out.println("<html>");
-            out.println("<head>");
-            out.println("<title>Servlet ProductController</title>");            
-            out.println("</head>");
-            out.println("<body>");
-            out.println("<h1>Servlet ProductController at " + request.getContextPath() + "</h1>");
-            out.println("</body>");
-            out.println("</html>");
+        String category_id = request.getParameter("category_id");
+        try {
+            DAO dao = new DAO();
+            List<Product> list = dao.getProductByCategoryID(category_id);
+            request.setAttribute("LIST_PRODUCT_BY_CID", list);
+        } catch (Exception e) {
         }
+        request.getRequestDispatcher("DisplayController").forward(request, response);
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
@@ -61,14 +57,7 @@ public class ProductController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-       String category_id = request.getParameter("category_id");
-        try {
-            DAO dao = new DAO();
-            List<Product> list = dao.getProductByCategoryID(category_id);
-            request.setAttribute("LIST_PRODUCT", list);
-        } catch (Exception e) {
-        }
-        request.getRequestDispatcher("DisplayController").forward(request, response);
+            processRequest(request, response);    
     }
 
     /**

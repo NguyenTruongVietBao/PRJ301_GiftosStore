@@ -16,38 +16,62 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import model.Cart;
-import model.Item;
 import model.Product;
-import model.User;
 
 /**
  *
  * @author VietBao
  */
-@WebServlet(name = "SearchCartController", urlPatterns = {"/SearchCartController"})
-public class SearchCartController extends HttpServlet {
+@WebServlet(name = "DeleteCartController", urlPatterns = {"/DeleteCartController"})
+public class DeleteCartController extends HttpServlet {
 
-    private static final String ERROR = "shop.jsp";
-    private static final String SUCCESS = "shop.jsp";
-
+    /**
+     * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
+     * methods.
+     *
+     * @param request servlet request
+     * @param response servlet response
+     * @throws ServletException if a servlet-specific error occurs
+     * @throws IOException if an I/O error occurs
+     */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        String url = ERROR;
-        try {
-            String search = request.getParameter("searchCart");
-            DAO dao = new DAO();
-            List<Product> listProduct = dao.searchProduct(search);
-            if (listProduct.size() > 0) {
-                url = SUCCESS;
-                request.setAttribute("LIST_SEARCHPRODUCT", listProduct);
-            }            
-        } catch (Exception e) {
-            log("Error at SearchController" + e.toString());
-        } finally {
-          //  response.sendRedirect(url);
-            request.getRequestDispatcher(url).forward(request, response);
+        DAO dao = new DAO();
+        List<Product> list = dao.getAllProduct();
+        Cookie arr[] = request.getCookies();
+        String txt="";
+        //xoa
+        if(arr != null){
+            for (Cookie cookie : arr) {
+                if(cookie.getName().equals("Cart")){    
+                    txt += cookie.getValue();
+                    cookie.setMaxAge(0);
+                    response.addCookie(cookie);
+                }
+            }
         }
+        String id = request.getParameter("id");
+        String ids[] = txt.split(",");
+        String out = "";
+        for (int i = 0; i < ids.length; i++) {
+            String []s = ids[i].split(":");
+            if(!s[0].equals(id)){
+                if(out.isEmpty()){
+                    out = ids[i];
+                }else{
+                    txt += "," + ids[i];
+                }
+            }
+        }
+        if(!out.isEmpty()){
+            Cookie c = new Cookie("Cart", out);
+            c.setMaxAge(2*24*60*60);
+            response.addCookie(c);
+        }
+        Cart cart = new Cart(out, list);
+        request.setAttribute("Cart", cart);
+        request.getRequestDispatcher("cart.jsp").forward(request, response);
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

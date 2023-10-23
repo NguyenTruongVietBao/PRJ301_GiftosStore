@@ -5,49 +5,34 @@
  */
 package controllers.cart;
 
-import DAO.DAO;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.List;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import model.Cart;
-import model.Item;
-import model.Product;
-import model.User;
 
 /**
  *
  * @author VietBao
  */
-@WebServlet(name = "SearchCartController", urlPatterns = {"/SearchCartController"})
-public class SearchCartController extends HttpServlet {
+@WebServlet(name = "CheckOutController", urlPatterns = {"/CheckOutController"})
+public class CheckOutController extends HttpServlet {
 
-    private static final String ERROR = "shop.jsp";
-    private static final String SUCCESS = "shop.jsp";
-
+    /**
+     * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
+     * methods.
+     *
+     * @param request servlet request
+     * @param response servlet response
+     * @throws ServletException if a servlet-specific error occurs
+     * @throws IOException if an I/O error occurs
+     */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        String url = ERROR;
-        try {
-            String search = request.getParameter("searchCart");
-            DAO dao = new DAO();
-            List<Product> listProduct = dao.searchProduct(search);
-            if (listProduct.size() > 0) {
-                url = SUCCESS;
-                request.setAttribute("LIST_SEARCHPRODUCT", listProduct);
-            }            
-        } catch (Exception e) {
-            log("Error at SearchController" + e.toString());
-        } finally {
-          //  response.sendRedirect(url);
-            request.getRequestDispatcher(url).forward(request, response);
-        }
+        request.getRequestDispatcher("checkOut.jsp").forward(request, response);
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

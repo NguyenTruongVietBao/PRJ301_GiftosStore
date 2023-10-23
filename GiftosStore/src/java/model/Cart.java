@@ -5,6 +5,7 @@
  */
 package model;
 
+import DAO.DAO;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -16,34 +17,17 @@ import java.util.Map;
  */
 public class Cart {
     
-    private Map<String, Product> cart;
     private List<Item> items;
     
     public Cart() {
         items = new ArrayList<>();
     }
 
-    public Cart(Map<String, Product> cart, List<Item> items) {
-        this.cart = cart;
-        this.items = items;
-    }    
-
-    public Map<String, Product> getCart() {
-        return cart;
-    }
-
-    public void setCart(Map<String, Product> cart) {
-        this.cart = cart;
-    }
-    
     public List<Item> getItems() {
         return items;
     }
 
-    public void setItems(List<Item> items) {
-        this.items = items;
-    }
-    private int getQuantityById(String id){
+    public int getQuantityById(String id){
         return getItemById(id).getQuantity();
     }
     
@@ -58,11 +42,10 @@ public class Cart {
     
     public void addItem(Item t){
         if(getItemById(t.getProduct().getId())!= null){
-            Item t2 = getItemById(t.getProduct().getId());
-            t2.setQuantity(t2.getQuantity() + t.getQuantity());
-        }else{
-            items.add(t);
-        }
+            Item m = getItemById(t.getProduct().getId());
+            m.setQuantity(m.getQuantity() + t.getQuantity());
+        }else
+            items.add(t);        
     }
     
     public void removeItem(String id){
@@ -74,11 +57,38 @@ public class Cart {
     public int getTotalMoney(){
         int t = 0;
         for (Item item : items) {
-            t = t + (item.getQuantity()*item.getPrice());
+            t +=  (item.getQuantity()*item.getPrice());
         }
         return t;
     }
+    
+    private Product getProductById(String id, List<Product> list){
+        for (Product i : list) {
+            if(i.getId().equals(id))
+                return i;           
+        }
+        return null;
+    }
+    
+    public Cart (String txt, List<Product> list){
+        items = new ArrayList<>();        
+        if(txt!=null && txt.length()!=0){
+            String s[] = txt.split(",");
+            for (String i : s) {
+                String[] n = i.split(":");
+                String id = n[0];
+                int quantity = Integer.parseInt(n[1]);
+                Product p = getProductById(id, list);
+                Item t = new Item(p, quantity, p.getPrice());
+                addItem(t);
+            }
+        }
+    }
 
+    
+    
+    
+    
 //    public void add(Product product) {
 //        if(this.cart == null){
 //            this.cart = new HashMap<>();

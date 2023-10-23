@@ -106,19 +106,26 @@
                             <a href="MainController?action=Logout">Logout</a>
                         </a>   
                         <%}%>                       
-                        <a href="MainController?action=Cart">
+                        <form action="MainController" method="POST">
                             <i class="fa fa-shopping-bag" aria-hidden="true"></i>
-                            <span>Cart</span>                             
-                        </a>  
+                            <button style="border: none; background: none" type="submit" name="action" value="ViewCart">
+                                Cart (${requestScope.sizeCart})
+                            </button>
+                        </form>  
                     </div>
-                </div>
+                </div> 
                 <div class="collapse navbar-collapse innerpage_navbar" id="navbarSupportedContent">
                     <ul class="navbar-nav" style="padding-right: 20px">
-                        <li class="nav-item active">
-                            <a class="nav-link" href="ProductController?category_id=Children">
-                                All
-                            </a> 
-                        </li>                           
+                        <form action="MainController" method="POST"  >
+                            <li class="nav-item active">
+                                <!--                                <a class="nav-link" href="MainController?action=Display">
+                                                                    All
+                                                                </a> -->
+                                <button type="submit" name="action" value="Display" style="border: none; background: none">    
+                                    <a class="nav-link" type="submit" name="action" value="Display">All</a>
+                                </button>
+                            </li>
+                        </form>
                     </ul>
                     <ul class="navbar-nav" style="padding-right: 5px">
                         <li class="nav-item active">
@@ -153,100 +160,121 @@
             </nav>
         </header>
         <!-- end header section -->
-
     </div>
     <!-- end hero area -->
+
     <!-- shop section -->
     <section class="shop_section layout_padding">
         <div class="container">           
             <div class="heading_container heading_center">
                 <h1>All product</h1>
             </div>
-            <div class="row">
-                <c:forEach items="${requestScope.LIST_PRODUCT}" var="p"> 
+            <div class="row"> 
+                <c:forEach items="${requestScope.LIST_PRODUCT_BY_CID}" var="p"> 
                     <div class="col-sm-6 col-md-4 col-lg-3">
                         <div class="box">
                             <div class="img-box">
                                 <img src="${p.thumbnail}">
                             </div>
                             <div class="detail-box">
-                                <h6>
-                                    ${p.title}
-                                </h6>
-                                <h6>
-                                    <span>
-                                        ${p.price}$
-                                    </span>
-                                </h6>
+                                <h6>    ${p.title}  </h6>
+                                <h6>    <span>  ${p.price}$ </span> </h6>
                             </div>                                            
                             <div class="new">
-                                <span>
-                                    ${p.id}
-                                </span>
+                                <span>  ${p.id} </span>
                             </div>                                       
                             <div>
                                 <span style="color: #007bff">SL: ${p.quantity}</span>
-                                <a href="cart.jsp" >
-                                    <button style="background-color: orange; color:white; border:none; padding: 0 10px; margin-left: 75px">
+                                <!--<input type="hidden" name="numQuantity" value="1"/>-->
+                                <a href="AddCartController?id=${p.id}&numQuantity=1" >
+                                    <button style="background-color: orange; color:white; border:none;padding: 0 10px; margin-left: 77px">
                                         Add to Cart
                                     </button>
-                                </a> 
+                                </a>   
                             </div>
                         </div>                            
-                    </div>
+                    </div>                               
                 </c:forEach>  
-            </div>
-
-
-            <%  List<Product> listProduct = (List<Product>) request.getAttribute("LIST_SEARCHPRODUCT");
-                if (listProduct != null) {
-                    if (listProduct.size() > 0) {
-                        int count = 1;
-                        for (Product product : listProduct) {
-            %>
+            </div>           
+            <div class="row"> 
+                <c:if test="${LIST_PRODUCT_BY_CID == null}">
+                    <c:forEach items="${requestScope.LIST_PRODUCT}" var="p2">
+                        <div class="col-sm-6 col-md-4 col-lg-3">
+                            <div class="box">
+                                <div class="img-box">
+                                    <img src="${p2.thumbnail}">
+                                </div>
+                                <div class="detail-box">
+                                    <h6>
+                                        ${p2.title}
+                                    </h6>
+                                    <h6>
+                                        <span>
+                                            ${p2.price}$
+                                        </span>
+                                    </h6>
+                                </div>                                            
+                                <div class="new">
+                                    <span>
+                                        ${p2.id}
+                                    </span>
+                                </div>                                    
+                                <div>
+                                    <span style="color: #007bff">
+                                        SL: ${p2.quantity}
+                                    </span>
+                                    <a href="AddCartController?id=${p2.id}&numQuantity=1" >
+                                        <button style="background-color: orange; color:white; border:none;padding: 0 10px; margin-left: 77px">
+                                            Add to Cart
+                                        </button>
+                                    </a>   
+                                </div>
+                            </div>                            
+                        </div> 
+                    </c:forEach>
+                </c:if>
+            </div>     
             <div class="row">
+                <%  List<Product> listSearchProduct = (List<Product>) request.getAttribute("LIST_SEARCHPRODUCT");
+                    if (listSearchProduct != null) {
+                        if (listSearchProduct.size() > 0) {
+                            for (Product searchProduct : listSearchProduct) {
+                %>
                 <div class="col-sm-6 col-md-4 col-lg-3">
                     <div class="box">
                         <div class="img-box">
-                            <img src=" <%= product.getThumbnail()%>" alt="">
+                            <img src=" <%= searchProduct.getThumbnail()%>" alt="">
                         </div>
                         <div class="detail-box">
                             <h6>
-                                <%= product.getTitle()%>
+                                <%= searchProduct.getTitle()%>
                             </h6>
                             <h6>
                                 <span>
-                                    <%= product.getPrice()%>
+                                    <%= searchProduct.getPrice()%>$
                                 </span>
                             </h6>
                         </div>                                            
                         <div class="new">
                             <span>
-                                <%= product.getId()%>
+                                <%= searchProduct.getId()%>
                             </span>
-                        </div>                                       
+                        </div>                                                              
                         <div>
-                            <span style="color: #007bff">SL:  <%= product.getQuantity()%></span>
-                            <a href="cart.jsp" >
-                                <button style="background-color: orange; color:white; border:none; padding: 0 10px; margin-left: 75px">
+                            <span style="color: #007bff">SL: <%= searchProduct.getQuantity()%></span>
+                            <a href="AddCartController?id=<%= searchProduct.getId()%>&numQuantity=1" >
+                                <button style="background-color: orange; color:white; border:none;padding: 0 10px; margin-left: 77px">
                                     Add to Cart
                                 </button>
-                            </a> 
-                        </div>
-                    </div>                            
-                </div>
+                            </a>   
+                        </div>                        
+                    </div>                             
+                </div>                       
                 <%
                             }
                         }
                     }
-                %>    
-            </div>
-
-
-            <div class="btn-box">
-                <a href="">
-                    View All Products
-                </a>
+                %>  
             </div>
         </div>
     </section>
@@ -270,6 +298,7 @@
                 </a>
             </div>
         </div>
+
         <div class="info_container ">
             <div class="container">
                 <div class="row">
@@ -334,7 +363,6 @@
             </div>
         </footer>
         <!-- footer section -->
-
     </section>
     <!-- end info section -->
     <script src="js/jquery-3.4.1.min.js"></script>

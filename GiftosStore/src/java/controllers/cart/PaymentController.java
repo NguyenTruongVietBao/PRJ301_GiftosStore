@@ -15,8 +15,8 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import model.Cart;
-import model.Item;
 import model.Product;
 import model.User;
 
@@ -24,29 +24,45 @@ import model.User;
  *
  * @author VietBao
  */
-@WebServlet(name = "SearchCartController", urlPatterns = {"/SearchCartController"})
-public class SearchCartController extends HttpServlet {
+@WebServlet(name = "PaymentController", urlPatterns = {"/PaymentController"})
+public class PaymentController extends HttpServlet {
 
-    private static final String ERROR = "shop.jsp";
-    private static final String SUCCESS = "shop.jsp";
+        private static final String ERROR = "a.jsp";    
+        private static final String SUCCESS = "orderSuccess.jsp";    
 
-    protected void processRequest(HttpServletRequest request, HttpServletResponse response)
+        protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         String url = ERROR;
         try {
-            String search = request.getParameter("searchCart");
             DAO dao = new DAO();
-            List<Product> listProduct = dao.searchProduct(search);
-            if (listProduct.size() > 0) {
+            List<Product> list = dao.getAllProduct();
+            Cookie arr[] = request.getCookies();
+            String txt="";      
+            if(arr != null){
+                for (Cookie cookie : arr) {
+                    if(cookie.getName().equals("Cart")){    
+                        txt += cookie.getValue();
+                        cookie.setMaxAge(0);
+                        response.addCookie(cookie);
+                    }
+                }
+            }
+            Cart cart = new Cart(txt, list);
+            HttpSession session = request.getSession();
+            User u = (User) session.getAttribute("LOGIN_USER");
+            if(u == null){
+                response.sendRedirect("login.jsp");
+            }else{               
+                dao.addOrder(u, cart);
+                Cookie c = new Cookie("Cart", txt);
+                c.setMaxAge(0);
+                response.addCookie(c); 
                 url = SUCCESS;
-                request.setAttribute("LIST_SEARCHPRODUCT", listProduct);
-            }            
+                request.getRequestDispatcher(url).forward(request, response);
+            }
         } catch (Exception e) {
-            log("Error at SearchController" + e.toString());
-        } finally {
-          //  response.sendRedirect(url);
-            request.getRequestDispatcher(url).forward(request, response);
+            
         }
     }
 

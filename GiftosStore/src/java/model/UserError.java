@@ -36,15 +36,15 @@ public class UserError {
     
     public UserError() {
         this.id = "*";
-        this.fullname = "*";;
-        this.email = "*";;
-        this.google_id = "*";;
-        this.phone_number = "*";;
-        this.address = "*";;
-        this.password = "*";;
-        this.role_id = "*";;
-        this.confirmError = "*";;
-        this.error = "*";;
+        this.fullname = "*";
+        this.email = "*";
+        this.google_id = "*";
+        this.phone_number = "*";
+        this.address = "*";
+        this.password = "*";
+        this.role_id = "*";
+        this.confirmError = "*";
+        this.error = "*";
     }
 
     public String getId() {

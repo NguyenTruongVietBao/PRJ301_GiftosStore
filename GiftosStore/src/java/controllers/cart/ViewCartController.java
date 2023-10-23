@@ -16,38 +16,32 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import model.Cart;
-import model.Item;
 import model.Product;
-import model.User;
 
 /**
  *
  * @author VietBao
  */
-@WebServlet(name = "SearchCartController", urlPatterns = {"/SearchCartController"})
-public class SearchCartController extends HttpServlet {
-
-    private static final String ERROR = "shop.jsp";
-    private static final String SUCCESS = "shop.jsp";
+@WebServlet(name = "ViewCartController", urlPatterns = {"/ViewCartController"})
+public class ViewCartController extends HttpServlet {
 
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        String url = ERROR;
-        try {
-            String search = request.getParameter("searchCart");
-            DAO dao = new DAO();
-            List<Product> listProduct = dao.searchProduct(search);
-            if (listProduct.size() > 0) {
-                url = SUCCESS;
-                request.setAttribute("LIST_SEARCHPRODUCT", listProduct);
-            }            
-        } catch (Exception e) {
-            log("Error at SearchController" + e.toString());
-        } finally {
-          //  response.sendRedirect(url);
-            request.getRequestDispatcher(url).forward(request, response);
+        DAO dao = new DAO();
+        List<Product> list = dao.getAllProduct();
+        Cookie arr[] = request.getCookies();
+        String txt="";
+        if(arr!= null){
+            for (Cookie cookie : arr) {
+                if(cookie.getName().equals("Cart")){
+                    txt+=cookie.getValue();
+                }
+            }
         }
+        Cart c = new Cart(txt, list);
+        request.setAttribute("Cart", c);
+        request.getRequestDispatcher("cart.jsp").forward(request, response);
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

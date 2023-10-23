@@ -56,11 +56,13 @@
                             <li class="nav-item active">
                                 <a class="nav-link" href="home.jsp">Home <span class="sr-only">(current)</span></a>
                             </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="MainController?action=Display">
-                                    Shop
-                                </a> 
-                            </li>
+                            <form action="MainController" method="POST"  >
+                                <li class="nav-item">
+                                    <button type="submit" name="action" value="Display" style="border: none; background: none">    
+                                        <a class="nav-link" type="submit" name="action" value="Display">Shop</a>
+                                    </button>
+                                </li>
+                            </form>
                             <li class="nav-item">
                                 <a class="nav-link" href="#whyus">
                                     Why Us
@@ -86,22 +88,24 @@
                             String name = loginUser.getFullname();
                             if(name == null){
                         %>   
-                                <a href="login.jsp">
-                                    <!--MainController?action=Login-->
-                                    <i class="fa fa-user" aria-hidden="true"></i>
-                                    <span>Login</span>
-                                </a>
+                            <a href="login.jsp">
+                                <!--MainController?action=Login-->
+                                <i class="fa fa-user" aria-hidden="true"></i>
+                                <span>Login</span>
+                            </a>
                         <%}else{%>
-                                <a href="#">
-                                    <img  style="margin-left: 150px; border-radius: 100%" src="https://inkythuatso.com/uploads/thumbnails/800/2022/03/4a7f73035bb4743ee57c0e351b3c8bed-29-13-53-17.jpg" width="35px" height="35px"/>
-                                    <span><%=name%></span>  |
-                                    <a href="MainController?action=Logout">Logout</a>
-                                </a>   
-                        <%}%>
-                            <a href="MainController?action=Cart">
-                                <i class="fa fa-shopping-bag" aria-hidden="true"></i>
-                                <span>Cart</span>                             
-                            </a>                           
+                            <a href="#">
+                                <img  style="margin-left: 150px; border-radius: 100%" src="https://inkythuatso.com/uploads/thumbnails/800/2022/03/4a7f73035bb4743ee57c0e351b3c8bed-29-13-53-17.jpg" width="35px" height="35px"/>
+                                <span><%=name%></span>  |
+                                <a href="MainController?action=Logout">Logout</a>
+                            </a>   
+                        <%}%>        
+                            <form action="MainController" method="POST">                                
+                                <i class="fa fa-shopping-bag" aria-hidden="true"></i>                                
+                                <button style="border: none; background: none" type="submit" name="action" value="ViewCart">
+                                    Cart  ${requestScope.sizeCart}
+                                </button>
+                            </form>                                                 
                         </div>
                     </div>
                 </nav>
@@ -316,112 +320,16 @@
                             </a>
                         </div>
                     </div>
-                    <div class="col-sm-6 col-md-4 col-lg-3">
-                        <div class="box">
-                            <a href="">
-                                <div class="img-box">
-                                    <img src="images/p5.png" alt="">
-                                </div>
-                                <div class="detail-box">
-                                    <h6>
-                                        Teddy Bear
-                                    </h6>
-                                    <h6>
-                                        Price
-                                        <span>
-                                            $95
-                                        </span>
-                                    </h6>
-                                </div>
-                                <div class="new">
-                                    <span>
-                                        New
-                                    </span>
-                                </div>
-                            </a>
-                        </div>
-                    </div>
-                    <div class="col-sm-6 col-md-4 col-lg-3">
-                        <div class="box">
-                            <a href="">
-                                <div class="img-box">
-                                    <img src="images/p6.png" alt="">
-                                </div>
-                                <div class="detail-box">
-                                    <h6>
-                                        Flower Bouquet
-                                    </h6>
-                                    <h6>
-                                        Price
-                                        <span>
-                                            $70
-                                        </span>
-                                    </h6>
-                                </div>
-                                <div class="new">
-                                    <span>
-                                        New
-                                    </span>
-                                </div>
-                            </a>
-                        </div>
-                    </div>
-                    <div class="col-sm-6 col-md-4 col-lg-3">
-                        <div class="box">
-                            <a href="">
-                                <div class="img-box">
-                                    <img src="images/p7.png" alt="">
-                                </div>
-                                <div class="detail-box">
-                                    <h6>
-                                        Watch
-                                    </h6>
-                                    <h6>
-                                        Price
-                                        <span>
-                                            $400
-                                        </span>
-                                    </h6>
-                                </div>
-                                <div class="new">
-                                    <span>
-                                        New
-                                    </span>
-                                </div>
-                            </a>
-                        </div>
-                    </div>
-                    <div class="col-sm-6 col-md-4 col-lg-3">
-                        <div class="box">
-                            <a href="">
-                                <div class="img-box">
-                                    <img src="images/p8.png" alt="">
-                                </div>
-                                <div class="detail-box">
-                                    <h6>
-                                        Ring
-                                    </h6>
-                                    <h6>
-                                        Price
-                                        <span>
-                                            $450
-                                        </span>
-                                    </h6>
-                                </div>
-                                <div class="new">
-                                    <span>
-                                        New
-                                    </span>
-                                </div>
-                            </a>
-                        </div>
-                    </div>
                 </div>
                 <div class="btn-box">
-                    <a href="">
-                        View All Products
-                    </a>
+                    <form action="MainController" method="POST"  >
+                        <input type="hidden" name="searchCart" value="" placeholder="What are u looking for ?"/>
+                        <button class="btn nav_search-btn" type="submit" name="action" value="SearchCart">    
+                            <a>View All Products</a>
+                        </button>
+                    </form>   
                 </div>
+                             
             </div>
         </section>
         <!-- end shop section -->
